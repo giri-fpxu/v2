@@ -1,0 +1,3867 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeQuest - Build Your Mental Wellness Habit</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts - Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fff8f0 0%, #f5f0ff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        /* Language Selector */
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+        }
+        
+        .language-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #ff9966;
+            border-radius: 25px;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #ff5e62;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .language-btn:hover {
+            background: #ff9966;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 153, 102, 0.3);
+        }
+        
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 10px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: none;
+            min-width: 150px;
+        }
+        
+        .language-dropdown.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .language-option {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .language-option:hover {
+            background: #fff8f0;
+        }
+        
+        .language-option.active {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            color: white;
+        }
+        
+        body.dark-mode .language-btn {
+            background: rgba(30, 30, 46, 0.9);
+            color: #ff9966;
+            border-color: #ff9966;
+        }
+        
+        body.dark-mode .language-dropdown {
+            background: rgba(30, 30, 46, 0.95);
+            border: 1px solid #444466;
+        }
+        
+        body.dark-mode .language-option {
+            border-bottom-color: #444466;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .language-option:hover {
+            background: rgba(50, 50, 70, 0.8);
+        }
+        
+        body.dark-mode .language-option.active {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            color: white;
+        }
+        
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            transform: translateY(-20px);
+        }
+        
+        .loading-spinner {
+            width: 70px;
+            height: 70px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 25px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            animation: bounceIn 0.8s ease;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .loading-narrative {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 400px;
+            line-height: 1.6;
+            animation: fadeInUp 0.8s ease 0.3s both;
+            margin-top: 10px;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Page Container */
+        .page-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Landing Page */
+        #landingPage {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #fff8f0 0%, #f5f0ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated Background Elements */
+        .floating-emoji {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.08;
+            animation: float 20s infinite linear;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg) translateX(0px); }
+            33% { transform: translateY(-30px) rotate(120deg) translateX(20px); }
+            66% { transform: translateY(20px) rotate(240deg) translateX(-20px); }
+            100% { transform: translateY(0px) rotate(360deg) translateX(0px); }
+        }
+        
+        .landing-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 60px 50px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.1);
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .landing-title {
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            text-align: center;
+        }
+        
+        .landing-subtitle {
+            font-size: 22px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            text-align: center;
+        }
+        
+        /* Background Story Section */
+        .background-story {
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.05) 0%, rgba(255, 94, 98, 0.05) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            border-left: 5px solid #ff9966;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .background-story::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ff9966' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+            z-index: 0;
+        }
+        
+        .story-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .story-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ff5e62;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .story-title i {
+            font-size: 32px;
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .story-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        
+        .story-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .story-point {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .story-point:hover {
+            border-color: #ff9966;
+            transform: translateY(-5px);
+        }
+        
+        .point-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        
+        .story-point:hover .point-icon {
+            transform: scale(1.2);
+        }
+        
+        .point-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .point-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Feature Section */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            color: white;
+            padding: 35px 25px;
+            border-radius: 18px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .feature-card:hover::before {
+            left: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 153, 102, 0.4);
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2);
+        }
+        
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .feature-desc {
+            font-size: 15px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+        
+        /* Interactive Emoji Animation */
+        .interactive-emoji {
+            font-size: 40px;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: gentleFloat 3s ease-in-out infinite;
+        }
+        
+        .interactive-emoji:hover {
+            animation: dance 0.6s ease infinite alternate;
+            transform-origin: center bottom;
+        }
+        
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes dance {
+            0% { transform: rotate(-15deg) scale(1.1); }
+            100% { transform: rotate(15deg) scale(1.1); }
+        }
+        
+        /* Auth Pages */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            max-width: 450px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-logo h2 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #ff9966;
+            box-shadow: 0 0 0 0.2rem rgba(255, 153, 102, 0.25);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 153, 102, 0.4);
+        }
+        
+        /* Dashboard */
+        .dashboard-container {
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .user-stats {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .stat-icon {
+            color: #ff9966;
+        }
+        
+        /* Cards */
+        .card-custom {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Mood Selection - Animasi Diperbarui */
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .mood-item {
+            text-align: center;
+            padding: 20px 15px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mood-item:hover {
+            border-color: #ff9966;
+            transform: scale(1.05);
+        }
+        
+        .mood-item.active {
+            border-color: #ff9966;
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.1) 0%, rgba(255, 94, 98, 0.1) 100%);
+        }
+        
+        /* Enhanced Emoji Animation in Mood Selection */
+        .mood-emoji {
+            font-size: 40px;
+            margin-bottom: 8px;
+            display: inline-block;
+            transition: all 0.5s ease;
+            position: relative;
+            animation: gentleFloat 4s ease-in-out infinite;
+        }
+        
+        /* Animasi khusus untuk setiap mood saat hover */
+        .mood-item[data-mood="happy"]:hover .mood-emoji {
+            animation: happyDance 0.6s ease infinite alternate;
+            transform-origin: bottom;
+        }
+        
+        .mood-item[data-mood="good"]:hover .mood-emoji {
+            animation: goodVibe 0.8s ease infinite alternate;
+        }
+        
+        .mood-item[data-mood="neutral"]:hover .mood-emoji {
+            animation: neutralFloat 1s ease infinite alternate;
+        }
+        
+        .mood-item[data-mood="sad"]:hover .mood-emoji {
+            animation: sadBounce 1.2s ease infinite alternate;
+            transform-origin: bottom;
+        }
+        
+        .mood-item[data-mood="stressed"]:hover .mood-emoji {
+            animation: stressedPulse 0.5s ease infinite alternate;
+        }
+        
+        /* Animasi saat dipilih */
+        .mood-item.active .mood-emoji {
+            animation: selectedGlow 1s ease;
+        }
+        
+        /* Keyframes Animasi Baru */
+        @keyframes happyDance {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-10px) rotate(-10deg) scale(1.1); }
+            75% { transform: translateY(-5px) rotate(10deg) scale(1.15); }
+            100% { transform: translateY(-10px) rotate(0deg) scale(1.1); }
+        }
+        
+        @keyframes goodVibe {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.1); }
+            100% { transform: translateY(0) scale(1.05); }
+        }
+        
+        @keyframes neutralFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-5px) rotate(-5deg); }
+            66% { transform: translateY(-8px) rotate(5deg); }
+        }
+        
+        @keyframes sadBounce {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-3px) scale(0.95); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        
+        @keyframes stressedPulse {
+            0%, 100% { transform: scale(1) translateX(0); }
+            25% { transform: scale(1.05) translateX(-2px); }
+            50% { transform: scale(1.1) translateX(0); }
+            75% { transform: scale(1.05) translateX(2px); }
+        }
+        
+        @keyframes selectedGlow {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.2); filter: brightness(1.2); }
+            100% { transform: scale(1.1); filter: brightness(1.1); }
+        }
+        
+        /* Efek glow saat hover */
+        .mood-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.1) 0%, rgba(255, 94, 98, 0.1) 100%);
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+        
+        .mood-item:hover::before {
+            opacity: 1;
+        }
+        
+        .mood-emoji, .mood-label {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .mood-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+        
+        .mood-item:hover .mood-label {
+            color: #ff9966;
+            font-weight: 600;
+        }
+        
+        /* Quest Cards - Diperbarui dengan Subquest */
+        .quest-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .quest-card {
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.1) 0%, rgba(255, 94, 98, 0.1) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .quest-card:hover {
+            border-color: #ff9966;
+            transform: translateX(5px);
+        }
+        
+        .quest-card.active {
+            border-color: #ff9966;
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.2) 0%, rgba(255, 94, 98, 0.2) 100%);
+        }
+        
+        .quest-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .quest-title {
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quest-xp {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .quest-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .quest-duration {
+            font-size: 13px;
+            color: #ff9966;
+            font-weight: 500;
+        }
+        
+        /* Subquest Styles */
+        .subquest-container {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            border-left: 3px solid #ff9966;
+        }
+        
+        .subquest-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #ff5e62;
+            margin-bottom: 8px;
+        }
+        
+        .subquest-list {
+            padding-left: 20px;
+        }
+        
+        .subquest-item {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+        
+        .subquest-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Timer Section - Diperbarui dengan Detail Quest */
+        .timer-display {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .timer-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            color: white;
+            box-shadow: 0 10px 40px rgba(255, 153, 102, 0.4);
+            animation: pulseGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 10px 40px rgba(255, 153, 102, 0.4); }
+            100% { box-shadow: 0 10px 60px rgba(255, 153, 102, 0.6); }
+        }
+        
+        .timer-time {
+            font-size: 48px;
+            font-weight: 700;
+        }
+        
+        .timer-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        
+        /* Active Quest Details */
+        .active-quest-details {
+            background: rgba(255, 153, 102, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .active-quest-title {
+            font-weight: 600;
+            color: #ff5e62;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .active-quest-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .active-subquests {
+            margin-top: 15px;
+        }
+        
+        .active-subquest-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        
+        .active-subquest-item i {
+            color: #ff9966;
+        }
+        
+        /* Progress Bar */
+        .progress-custom {
+            height: 25px;
+            border-radius: 15px;
+            background: #e0e0e0;
+            overflow: hidden;
+        }
+        
+        .progress-bar-custom {
+            height: 100%;
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Streak Display */
+        .streak-display {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.1) 0%, rgba(255, 94, 98, 0.1) 100%);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .streak-number {
+            font-size: 72px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+        
+        .streak-label {
+            font-size: 18px;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .streak-fire {
+            font-size: 40px;
+            margin-bottom: 10px;
+            animation: fireFlicker 1s ease-in-out infinite alternate;
+        }
+        
+        @keyframes fireFlicker {
+            0% { transform: scale(1); opacity: 0.9; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+        
+        /* History Table */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .history-table th,
+        .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .history-table th {
+            font-weight: 600;
+            color: #ff9966;
+            font-size: 14px;
+        }
+        
+        .history-table td {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Badges */
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+        }
+        
+        .badge-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.1) 0%, rgba(255, 94, 98, 0.1) 100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .badge-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .badge-item.locked {
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+        
+        .badge-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .badge-item:hover .badge-icon {
+            transform: rotate(15deg);
+        }
+        
+        .badge-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        /* Motivational Message */
+        .motivational-message {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(255, 153, 102, 0.4);
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .motivational-message h4 {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .motivational-message p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        
+        /* =========== DARK MODE =========== */
+        
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #f0f0f0;
+        }
+        
+        /* Improved text contrast in dark mode */
+        body.dark-mode,
+        body.dark-mode .text-muted,
+        body.dark-mode .story-text,
+        body.dark-mode .point-desc,
+        body.dark-mode .quest-desc,
+        body.dark-mode .history-table td,
+        body.dark-mode .streak-label,
+        body.dark-mode .mood-label,
+        body.dark-mode .badge-name,
+        body.dark-mode .form-label,
+        body.dark-mode .form-check-label,
+        body.dark-mode small,
+        body.dark-mode .fw-semibold:not(.text-gradient) {
+            color: #e0e0e0 !important;
+        }
+        
+        /* Improved contrast for muted text */
+        body.dark-mode .text-muted {
+            color: #b0b0c0 !important;
+        }
+        
+        /* Improved card backgrounds with better contrast */
+        body.dark-mode .landing-card,
+        body.dark-mode .auth-card,
+        body.dark-mode .navbar-custom,
+        body.dark-mode .card-custom,
+        body.dark-mode .streak-display,
+        body.dark-mode .history-table th,
+        body.dark-mode .history-table td,
+        body.dark-mode .settings-panel {
+            background: rgba(30, 30, 46, 0.95);
+            color: #f0f0f0;
+            border-color: #444466;
+        }
+        
+        /* Improved background for story section */
+        body.dark-mode .background-story {
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.08) 0%, rgba(255, 94, 98, 0.08) 100%);
+        }
+        
+        /* Improved story points in dark mode */
+        body.dark-mode .story-point {
+            background: rgba(40, 40, 60, 0.9);
+        }
+        
+        body.dark-mode .point-title {
+            color: #ffffff;
+        }
+        
+        /* Improved gradient text for dark mode */
+        body.dark-mode .landing-title,
+        body.dark-mode .auth-logo h2,
+        body.dark-mode .text-gradient,
+        body.dark-mode .streak-number,
+        body.dark-mode .story-title i {
+            background: linear-gradient(135deg, #ff9966 0%, #ff8e8e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Improved cards and buttons in dark mode */
+        body.dark-mode .feature-card,
+        body.dark-mode .motivational-message {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            color: white;
+        }
+        
+        body.dark-mode .btn-primary {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            border: none;
+        }
+        
+        body.dark-mode .btn-primary:hover {
+            box-shadow: 0 5px 20px rgba(255, 153, 102, 0.4);
+        }
+        
+        /* Improved form controls */
+        body.dark-mode .form-control {
+            background-color: rgba(40, 40, 60, 0.8);
+            border-color: #555577;
+            color: #f0f0f0;
+        }
+        
+        body.dark-mode .form-control:focus {
+            background-color: rgba(40, 40, 60, 0.9);
+            border-color: #ff9966;
+            color: #f0f0f0;
+            box-shadow: 0 0 0 0.2rem rgba(255, 153, 102, 0.25);
+        }
+        
+        body.dark-mode .form-control::placeholder {
+            color: #a0a0b0;
+        }
+        
+        /* Improved history table */
+        body.dark-mode .history-table th {
+            color: #ff9966;
+        }
+        
+        body.dark-mode .history-table td {
+            color: #d0d0e0;
+            border-bottom-color: #444466;
+        }
+        
+        /* Improved mood items and quest cards */
+        body.dark-mode .mood-item,
+        body.dark-mode .quest-card,
+        body.dark-mode .badge-item {
+            background: rgba(40, 40, 60, 0.8);
+            border-color: #555577;
+        }
+        
+        body.dark-mode .mood-item:hover,
+        body.dark-mode .quest-card:hover {
+            border-color: #ff9966;
+            background: rgba(50, 50, 70, 0.9);
+        }
+        
+        body.dark-mode .mood-item.active {
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.2) 0%, rgba(255, 94, 98, 0.2) 100%);
+            border-color: #ff9966;
+        }
+        
+        body.dark-mode .mood-item::before {
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.15) 0%, rgba(255, 94, 98, 0.15) 100%);
+        }
+        
+        body.dark-mode .quest-card.active {
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.25) 0%, rgba(255, 94, 98, 0.25) 100%);
+            border-color: #ff9966;
+        }
+        
+        /* Improved subquests in dark mode */
+        body.dark-mode .subquest-container {
+            background: rgba(40, 40, 60, 0.8);
+        }
+        
+        body.dark-mode .subquest-item {
+            color: #d0d0e0;
+        }
+        
+        body.dark-mode .active-quest-details {
+            background: rgba(255, 153, 102, 0.15);
+        }
+        
+        body.dark-mode .active-subquest-item {
+            background: rgba(40, 40, 60, 0.8);
+        }
+        
+        /* Improved timer circle */
+        body.dark-mode .timer-circle {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            box-shadow: 0 10px 40px rgba(255, 153, 102, 0.4);
+            animation: pulseGlowDark 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulseGlowDark {
+            0% { box-shadow: 0 10px 40px rgba(255, 153, 102, 0.4); }
+            100% { box-shadow: 0 10px 60px rgba(255, 153, 102, 0.6); }
+        }
+        
+        /* Improved progress bars */
+        body.dark-mode .progress-custom {
+            background: rgba(60, 60, 80, 0.5);
+        }
+        
+        body.dark-mode .progress-bar-custom {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+        }
+        
+        /* Improved streak display */
+        body.dark-mode .streak-display {
+            background: linear-gradient(135deg, rgba(255, 153, 102, 0.1) 0%, rgba(255, 94, 98, 0.1) 100%);
+        }
+        
+        /* Improved card titles and labels */
+        body.dark-mode .card-title,
+        body.dark-mode .point-title,
+        body.dark-mode .quest-title {
+            color: #ffffff;
+        }
+        
+        body.dark-mode .quest-duration {
+            color: #ff9966;
+        }
+        
+        body.dark-mode .mood-item:hover .mood-label {
+            color: #ff9966;
+        }
+        
+        /* Improved settings panel */
+        body.dark-mode .settings-item {
+            border-bottom-color: #444466;
+        }
+        
+        /* Improved theme toggle button */
+        body.dark-mode .theme-toggle-btn {
+            background: rgba(40, 40, 60, 0.8);
+            color: #ff9966;
+            border: 1px solid #555577;
+        }
+        
+        body.dark-mode .theme-toggle-btn:hover {
+            background: rgba(50, 50, 70, 0.9);
+        }
+        
+        /* Improved form check */
+        body.dark-mode .form-check-input {
+            background-color: rgba(60, 60, 80, 0.8);
+            border-color: #555577;
+        }
+        
+        body.dark-mode .form-check-input:checked {
+            background-color: #ff9966;
+            border-color: #ff9966;
+        }
+        
+        /* Improved outline buttons */
+        body.dark-mode .btn-outline-primary,
+        body.dark-mode .btn-outline-secondary,
+        body.dark-mode .btn-outline-danger {
+            border-color: #555577;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .btn-outline-primary:hover {
+            background: rgba(255, 153, 102, 0.1);
+            border-color: #ff9966;
+        }
+        
+        body.dark-mode .btn-outline-secondary:hover {
+            background: rgba(100, 100, 120, 0.2);
+            border-color: #777799;
+        }
+        
+        body.dark-mode .btn-outline-danger:hover {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: #dc3545;
+        }
+        
+        /* Improved landing page subtitle */
+        body.dark-mode .landing-subtitle {
+            color: #c0c0d0;
+        }
+        
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .theme-toggle-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            animation: rotateIn 0.5s ease;
+        }
+        
+        @keyframes rotateIn {
+            from { transform: rotate(-180deg); opacity: 0; }
+            to { transform: rotate(0); opacity: 1; }
+        }
+        
+        .theme-toggle-btn:hover {
+            transform: rotate(30deg);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Streak Protection Indicator */
+        .streak-protection-badge {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            animation: pulseProtection 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulseProtection {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        body.dark-mode .streak-protection-badge {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+        }
+        
+        /* Settings Panel */
+        .settings-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 20px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .settings-panel.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Theme Selection */
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .theme-option {
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-option:hover {
+            border-color: #ff9966;
+            transform: translateY(-2px);
+        }
+        
+        .theme-option.active {
+            border-color: #ff9966;
+            background: rgba(255, 153, 102, 0.1);
+        }
+        
+        .theme-option.light {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            color: white;
+        }
+        
+        .theme-option.dark {
+            background: linear-gradient(135deg, #2d1b69 0%, #1a1a2e 100%);
+            color: white;
+        }
+        
+        /* Quest Completion Action Buttons */
+        .quest-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .language-selector {
+                top: 15px;
+                left: 15px;
+            }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+            }
+            
+            .language-btn {
+                padding: 6px 15px;
+                font-size: 14px;
+            }
+            
+            .landing-title {
+                font-size: 36px;
+            }
+            
+            .landing-subtitle {
+                font-size: 18px;
+            }
+            
+            .landing-card {
+                padding: 30px 20px;
+            }
+            
+            .background-story {
+                padding: 25px;
+            }
+            
+            .story-title {
+                font-size: 24px;
+            }
+            
+            .story-text {
+                font-size: 16px;
+            }
+            
+            .story-points {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timer-circle {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .timer-time {
+                font-size: 36px;
+            }
+            
+            .streak-number {
+                font-size: 56px;
+            }
+            
+            .user-stats {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .settings-panel {
+                width: 280px;
+                right: 10px;
+            }
+            
+            .quest-actions {
+                flex-direction: column;
+            }
+        }
+        
+        /* Utility Classes */
+        .text-gradient {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Landing Page CTA Buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        .btn-landing {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-landing:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Emoji Grid for Landing */
+        .emoji-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .emoji-item {
+            font-size: 48px;
+            animation: floatDelay 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .emoji-item:hover {
+            animation: bounceSpin 0.6s ease infinite alternate;
+        }
+        
+        @keyframes floatDelay {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes bounceSpin {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.2) rotate(20deg); }
+        }
+        
+        .emoji-item:nth-child(1) { animation-delay: 0s; }
+        .emoji-item:nth-child(2) { animation-delay: 0.2s; }
+        .emoji-item:nth-child(3) { animation-delay: 0.4s; }
+        .emoji-item:nth-child(4) { animation-delay: 0.6s; }
+        .emoji-item:nth-child(5) { animation-delay: 0.8s; }
+    </style>
+</head>
+<body>
+    
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">VibeQuest</div>
+            <div class="loading-narrative">
+                Membuka petualangan kesehatan mentalmu...
+            </div>
+        </div>
+    </div>
+    
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="language-btn" onclick="toggleLanguageDropdown()">
+            <i class="fas fa-globe"></i>
+            <span id="currentLanguage">Bahasa Indonesia</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="language-dropdown" id="languageDropdown">
+            <div class="language-option active" data-lang="id" onclick="changeLanguage('id')">
+                <i class="fas fa-flag"></i>
+                Bahasa Indonesia
+            </div>
+            <div class="language-option" data-lang="en" onclick="changeLanguage('en')">
+                <i class="fas fa-flag-usa"></i>
+                English
+            </div>
+        </div>
+    </div>
+    
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle">
+        <button class="theme-toggle-btn" onclick="toggleSettings()">
+            <i class="fas fa-palette"></i>
+        </button>
+    </div>
+    
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <h5 class="mb-3"><i class="fas fa-cog me-2"></i><span id="settingsTitle">Pengaturan Tampilan</span></h5>
+        
+        <div class="settings-item">
+            <div>
+                <div class="fw-semibold" id="themeTitle">Tema Warna</div>
+                <small class="text-muted" id="themeDescription">Pilih tema favoritmu</small>
+            </div>
+        </div>
+        
+        <div class="theme-options mb-3">
+            <div class="theme-option light active" data-theme="light" onclick="changeTheme('light')">
+                <i class="fas fa-sun me-1"></i> <span id="lightTheme">Light</span>
+            </div>
+            <div class="theme-option dark" data-theme="dark" onclick="changeTheme('dark')">
+                <i class="fas fa-moon me-1"></i> <span id="darkTheme">Dark</span>
+            </div>
+        </div>
+        
+        <div class="settings-item">
+            <div>
+                <div class="fw-semibold" id="streakProtectionTitle">Streak Protection</div>
+                <small class="text-muted" id="streakProtectionStatus">3x tersisa bulan ini</small>
+            </div>
+            <div class="streak-protection-badge" id="streakProtectionCount">
+                <i class="fas fa-shield-alt"></i> <span id="protectionCount">3</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Landing Page -->
+    <div id="landingPage" class="page-container">
+        <div class="container">
+            <div class="landing-card">
+                <div class="text-center">
+                    <h1 class="landing-title">VibeQuest</h1>
+                    <p class="landing-subtitle" id="landingSubtitle">
+                        Transformasi kesehatan mentalmu melalui sistem gamifikasi yang menyenangkan.<br>
+                        Bangun kebiasaan positif dan raih versi terbaik dirimu.
+                    </p>
+                </div>
+                
+                <!-- Animated Emoji Grid -->
+                <div class="emoji-grid">
+                    <div class="emoji-item interactive-emoji">🧠</div>
+                    <div class="emoji-item interactive-emoji">💪</div>
+                    <div class="emoji-item interactive-emoji">🌟</div>
+                    <div class="emoji-item interactive-emoji">🔥</div>
+                    <div class="emoji-item interactive-emoji">🎯</div>
+                </div>
+                
+                <!-- Background Story Section -->
+                <div class="background-story">
+                    <div class="story-content">
+                        <h2 class="story-title">
+                            <i class="fas fa-history"></i>
+                            <span id="storyTitle">Latar Belakang Aplikasi</span>
+                        </h2>
+                        
+                        <div class="story-text">
+                            <p id="storyText1">VibeQuest lahir dari kesadaran bahwa kesehatan mental adalah aset berharga yang perlu dijaga setiap hari. Di era digital yang penuh tekanan dan distraksi, banyak individu mengalami kesulitan menjaga keseimbangan emosi dan mental mereka.</p>
+                            
+                            <p id="storyText2">Berdasarkan penelitian, membangun kebiasaan kecil yang konsisten lebih efektif daripada perubahan besar yang tidak berkelanjutan. Namun, konsistensi adalah tantangan terbesar bagi kebanyakan orang.</p>
+                        </div>
+                        
+                        <div class="story-points">
+                            <div class="story-point">
+                                <div class="point-icon">🎯</div>
+                                <h4 class="point-title" id="pointTitle1">Misi Kami</h4>
+                                <p class="point-desc" id="pointDesc1">Membantu setiap individu membangun kebiasaan sehat untuk kesehatan mental melalui pendekatan yang menyenangkan dan berkelanjutan.</p>
+                            </div>
+                            
+                            <div class="story-point">
+                                <div class="point-icon">💡</div>
+                                <h4 class="point-title" id="pointTitle2">Konsep Dasar</h4>
+                                <p class="point-desc" id="pointDesc2">Menggabungkan prinsip psikologi positif, gamifikasi, dan behavioral science untuk menciptakan pengalaman yang efektif dan engaging.</p>
+                            </div>
+                            
+                            <div class="story-point">
+                                <div class="point-icon">🚀</div>
+                                <h4 class="point-title" id="pointTitle3">Visi Ke Depan</h4>
+                                <p class="point-desc" id="pointDesc3">Menjadi platform terdepan dalam membantu jutaan orang mencapai kesehatan mental optimal melalui kebiasaan sehari-hari.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Features Grid -->
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon interactive-emoji">🎯</div>
+                        <div class="feature-title" id="featureTitle1">Daily Quest Personal</div>
+                        <div class="feature-desc" id="featureDesc1">Aktivitas harian yang disesuaikan dengan mood dan kebutuhanmu untuk hasil optimal</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon interactive-emoji">🔥</div>
+                        <div class="feature-title" id="featureTitle2">Sistem Streak Cerdas</div>
+                        <div class="feature-desc" id="featureDesc2">Proteksi streak dan motivasi untuk tetap konsisten dalam perjalananmu</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon interactive-emoji">📊</div>
+                        <div class="feature-title" id="featureTitle3">Analisis Mendalam</div>
+                        <div class="feature-desc" id="featureDesc3">Pantau perkembanganmu dengan data dan insight yang detail untuk pertumbuhan berkelanjutan</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon interactive-emoji">🏆</div>
+                        <div class="feature-title" id="featureTitle4">Achievement System</div>
+                        <div class="feature-desc" id="featureDesc4">Kumpulkan badge dan naik level untuk membuka fitur eksklusif dan rewards</div>
+                    </div>
+                </div>
+                
+                <!-- Call to Action -->
+                <div class="text-center">
+                    <p class="lead mb-4" id="ctaText">Mulai perjalanan kesehatan mentalmu hari ini</p>
+                    <div class="cta-buttons">
+                        <button class="btn btn-primary btn-landing" onclick="showPage('loginPage')">
+                            <i class="fas fa-rocket me-2"></i>
+                            <span id="ctaButton1">Mulai Sekarang</span>
+                        </button>
+                        <button class="btn btn-outline-primary btn-landing" onclick="showDemo()">
+                            <i class="fas fa-play-circle me-2"></i>
+                            <span id="ctaButton2">Lihat Demo</span>
+                        </button>
+                    </div>
+                    <div class="mt-4">
+                        <small class="text-muted" id="footerText">Gratis selamanya • Privasi terjamin</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Login Page -->
+    <div id="loginPage" class="page-container">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-logo">
+                    <h2>VibeQuest</h2>
+                    <p class="text-muted" id="loginSubtitle">Selamat datang kembali!</p>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label class="form-label" id="loginEmailLabel">Email</label>
+                        <input type="email" class="form-control" id="loginEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="loginPasswordLabel">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe" id="rememberMeLabel">Ingat saya</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        <span id="loginButton">Masuk</span>
+                    </button>
+                    <div class="text-center">
+                        <span class="text-muted" id="loginRegisterText">Belum punya akun? </span>
+                        <a href="#" onclick="showPage('registerPage')" class="text-gradient fw-semibold" id="loginRegisterLink">Daftar di sini</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Register Page -->
+    <div id="registerPage" class="page-container">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-logo">
+                    <h2>VibeQuest</h2>
+                    <p class="text-muted" id="registerSubtitle">Mulai petualanganmu!</p>
+                </div>
+                
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label class="form-label" id="registerNameLabel">Nama Lengkap</label>
+                        <input type="text" class="form-control" id="registerName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="registerEmailLabel">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="registerPasswordLabel">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" required minlength="6">
+                        <small class="text-muted" id="passwordHint">Minimal 6 karakter</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-user-plus me-2"></i>
+                        <span id="registerButton">Daftar</span>
+                    </button>
+                    <div class="text-center">
+                        <span class="text-muted" id="registerLoginText">Sudah punya akun? </span>
+                        <a href="#" onclick="showPage('loginPage')" class="text-gradient fw-semibold" id="registerLoginLink">Masuk di sini</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard -->
+    <div id="dashboardPage" class="page-container">
+        <div class="dashboard-container">
+            <!-- Navbar -->
+            <div class="navbar-custom">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <div>
+                            <div class="fw-semibold" id="userName">User</div>
+                            <small class="text-muted" id="userLevel">Level 1</small>
+                        </div>
+                    </div>
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-star stat-icon"></i>
+                            <span id="userXP">0 XP</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-fire stat-icon"></i>
+                            <span id="userStreak">0 days</span>
+                        </div>
+                        <div class="stat-item" title="Streak Protection" onclick="toggleSettings()" style="cursor: pointer;">
+                            <i class="fas fa-shield-alt stat-icon"></i>
+                            <span id="userProtection">3</span>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-1"></i>
+                            <span id="logoutButton">Keluar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- Main Content -->
+                    <div class="col-lg-8">
+                        <!-- Motivational Message -->
+                        <div class="motivational-message" id="motivationalMessage">
+                            <h4>🌟 <span id="welcomeText">Selamat datang!</span></h4>
+                            <p id="welcomeSubtext">Mari mulai hari ini dengan komitmen untuk dirimu sendiri.</p>
+                        </div>
+                        
+                        <!-- Mood Selection -->
+                        <div class="card-custom" id="moodSection">
+                            <div class="card-title">
+                                <i class="fas fa-smile"></i>
+                                <span id="moodQuestion">Bagaimana perasaanmu hari ini?</span>
+                            </div>
+                            <div class="mood-grid">
+                                <div class="mood-item" data-mood="happy">
+                                    <div class="mood-emoji">😊</div>
+                                    <div class="mood-label" id="moodLabelHappy">Bahagia</div>
+                                </div>
+                                <div class="mood-item" data-mood="good">
+                                    <div class="mood-emoji">🙂</div>
+                                    <div class="mood-label" id="moodLabelGood">Baik</div>
+                                </div>
+                                <div class="mood-item" data-mood="neutral">
+                                    <div class="mood-emoji">😐</div>
+                                    <div class="mood-label" id="moodLabelNeutral">Biasa Saja</div>
+                                </div>
+                                <div class="mood-item" data-mood="sad">
+                                    <div class="mood-emoji">😔</div>
+                                    <div class="mood-label" id="moodLabelSad">Sedih</div>
+                                </div>
+                                <div class="mood-item" data-mood="stressed">
+                                    <div class="mood-emoji">😰</div>
+                                    <div class="mood-label" id="moodLabelStressed">Stres</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quest Selection -->
+                        <div class="card-custom hidden" id="questSection">
+                            <div class="card-title">
+                                <i class="fas fa-tasks"></i>
+                                <span id="questTitle">Pilih Quest Harimu</span>
+                            </div>
+                            <div class="quest-list" id="questList">
+                                <!-- Quest items will be populated here -->
+                            </div>
+                            <div class="d-flex justify-content-between mt-3">
+                                <button class="btn btn-outline-secondary" onclick="backToMoodSelection()">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    <span id="backToMoodButton">Ubah Mood</span>
+                                </button>
+                                <button class="btn btn-primary" onclick="startQuest()">
+                                    <i class="fas fa-play me-2"></i>
+                                    <span id="startQuestButton">Mulai Quest</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Active Quest Timer -->
+                        <div class="card-custom hidden" id="timerSection">
+                            <div class="card-title">
+                                <i class="fas fa-hourglass-half"></i>
+                                <span id="activeQuestText">Quest Aktif:</span> <span id="activeQuestName"></span>
+                            </div>
+                            <div class="timer-display">
+                                <div class="timer-circle">
+                                    <div class="timer-time" id="timerDisplay">00:00</div>
+                                    <div class="timer-label" id="timerLabel">Waktu tersisa</div>
+                                </div>
+                                
+                                <!-- Active Quest Details -->
+                                <div class="active-quest-details">
+                                    <div class="active-quest-title" id="currentQuestTitle">Detail Quest</div>
+                                    <div class="active-quest-desc" id="currentQuestDesc"></div>
+                                    <div class="active-subquests" id="activeSubquests">
+                                        <!-- Subquests will be populated here -->
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <button class="btn btn-success btn-lg me-2" onclick="completeQuest()">
+                                        <i class="fas fa-check me-2"></i>
+                                        <span id="completeQuestButton">Selesai</span>
+                                    </button>
+                                    <button class="btn btn-danger btn-lg" onclick="cancelQuest()">
+                                        <i class="fas fa-times me-2"></i>
+                                        <span id="cancelQuestButton">Batalkan</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Completion Message -->
+                        <div class="card-custom hidden" id="completionSection">
+                            <div class="text-center py-4">
+                                <div class="display-1 mb-3">🎉</div>
+                                <h3 class="text-gradient mb-3" id="completionTitle">Quest Selesai!</h3>
+                                <p class="lead mb-4" id="completionMessage">Luar biasa! Kamu telah menyelesaikan quest hari ini.</p>
+                                <div class="row mb-4">
+                                    <div class="col-6">
+                                        <div class="fw-semibold text-muted" id="earnedXPLabel">XP Didapat</div>
+                                        <div class="h3 text-gradient" id="earnedXP">+0</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="fw-semibold text-muted" id="streakLabel">Streak</div>
+                                        <div class="h3 text-gradient" id="currentStreakDisplay">0 🔥</div>
+                                    </div>
+                                </div>
+                                <div class="quest-actions">
+                                    <button class="btn btn-primary" onclick="goToQuestSelection()">
+                                        <i class="fas fa-plus me-2"></i>
+                                        <span id="anotherQuestButton">Quest Lainnya</span>
+                                    </button>
+                                    <button class="btn btn-outline-secondary" onclick="resetToMoodSelection()">
+                                        <i class="fas fa-redo me-2"></i>
+                                        <span id="backToMoodButton2">Kembali ke Mood</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar -->
+                    <div class="col-lg-4">
+                        <!-- Streak Display -->
+                        <div class="card-custom">
+                            <div class="streak-display">
+                                <div class="streak-fire">🔥</div>
+                                <div class="streak-number" id="streakNumber">0</div>
+                                <div class="streak-label" id="streakDaysLabel">Hari Berturut-turut</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Level Progress -->
+                        <div class="card-custom">
+                            <div class="card-title">
+                                <i class="fas fa-chart-line"></i>
+                                <span id="levelProgressTitle">Progress Level</span>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-semibold">Level <span id="currentLevel">1</span></span>
+                                    <span class="text-muted"><span id="currentXP">0</span> / <span id="nextLevelXP">100</span> XP</span>
+                                </div>
+                                <div class="progress-custom">
+                                    <div class="progress-bar-custom" id="xpProgressBar" style="width: 0%">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Badges -->
+                        <div class="card-custom">
+                            <div class="card-title">
+                                <i class="fas fa-trophy"></i>
+                                <span id="badgesTitle">Badge Achievements</span>
+                            </div>
+                            <div class="badge-grid" id="badgeGrid">
+                                <!-- Badges will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Stats -->
+                        <div class="card-custom">
+                            <div class="card-title">
+                                <i class="fas fa-chart-bar"></i>
+                                <span id="statsTitle">Statistik</span>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted" id="totalQuestsLabel">Total Quest Selesai</span>
+                                    <span class="fw-semibold" id="totalQuestsCompleted">0</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted" id="todaysQuestsLabel">Quest Hari Ini</span>
+                                    <span class="fw-semibold" id="todaysQuests">0</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted" id="consistencyLabel">Tingkat Konsistensi</span>
+                                    <span class="fw-semibold" id="consistencyRate">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- History Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card-custom">
+                            <div class="card-title">
+                                <i class="fas fa-history"></i>
+                                <span id="historyTitle">Riwayat Quest</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="history-table">
+                                    <thead>
+                                        <tr>
+                                            <th id="historyDate">Tanggal</th>
+                                            <th id="historyMood">Mood</th>
+                                            <th id="historyQuest">Quest</th>
+                                            <th id="historyStatus">Status</th>
+                                            <th id="historyXP">XP</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="historyTableBody">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted" id="noHistoryText">Belum ada riwayat</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // ========================
+        // Global Variables
+        // ========================
+        
+        let currentUser = null;
+        let selectedMood = null;
+        let selectedQuest = null;
+        let timerInterval = null;
+        let timerSeconds = 0;
+        let currentTheme = 'light';
+        let currentLanguage = 'id'; // Default bahasa Indonesia
+        
+        // Text translations - DIKEMBANGKAN LENGKAP
+        const translations = {
+            id: {
+                // Loading screen
+                loadingText: "Membuka petualangan kesehatan mentalmu...",
+                
+                // Landing page
+                storyTitle: "Latar Belakang Aplikasi",
+                storyText1: "VibeQuest lahir dari kesadaran bahwa kesehatan mental adalah aset berharga yang perlu dijaga setiap hari. Di era digital yang penuh tekanan dan distraksi, banyak individu mengalami kesulitan menjaga keseimbangan emosi dan mental mereka.",
+                storyText2: "Berdasarkan penelitian, membangun kebiasaan kecil yang konsisten lebih efektif daripada perubahan besar yang tidak berkelanjutan. Namun, konsistensi adalah tantangan terbesar bagi kebanyakan orang.",
+                pointTitle1: "Misi Kami",
+                pointDesc1: "Membantu setiap individu membangun kebiasaan sehat untuk kesehatan mental melalui pendekatan yang menyenangkan dan berkelanjutan.",
+                pointTitle2: "Konsep Dasar",
+                pointDesc2: "Menggabungkan prinsip psikologi positif, gamifikasi, dan behavioral science untuk menciptakan pengalaman yang efektif dan engaging.",
+                pointTitle3: "Visi Ke Depan",
+                pointDesc3: "Menjadi platform terdepan dalam membantu jutaan orang mencapai kesehatan mental optimal melalui kebiasaan sehari-hari.",
+                featureTitle1: "Daily Quest Personal",
+                featureDesc1: "Aktivitas harian yang disesuaikan dengan mood dan kebutuhanmu untuk hasil optimal",
+                featureTitle2: "Sistem Streak Cerdas",
+                featureDesc2: "Proteksi streak dan motivasi untuk tetap konsisten dalam perjalananmu",
+                featureTitle3: "Analisis Mendalam",
+                featureDesc3: "Pantau perkembanganmu dengan data dan insight yang detail untuk pertumbuhan berkelanjutan",
+                featureTitle4: "Achievement System",
+                featureDesc4: "Kumpulkan badge dan naik level untuk membuka fitur eksklusif dan rewards",
+                ctaText: "Mulai perjalanan kesehatan mentalmu hari ini",
+                ctaButton1: "Mulai Sekarang",
+                ctaButton2: "Lihat Demo",
+                footerText: "Gratis selamanya • Privasi terjamin",
+                
+                // Settings
+                settingsTitle: "Pengaturan Tampilan",
+                themeTitle: "Tema Warna",
+                themeDescription: "Pilih tema favoritmu",
+                lightTheme: "Light",
+                darkTheme: "Dark",
+                streakProtectionTitle: "Streak Protection",
+                streakProtectionStatus: "3x tersisa bulan ini",
+                protectionCount: "3",
+                
+                // Login page
+                loginSubtitle: "Selamat datang kembali!",
+                loginEmailLabel: "Email",
+                loginPasswordLabel: "Password",
+                rememberMeLabel: "Ingat saya",
+                loginButton: "Masuk",
+                loginRegisterText: "Belum punya akun? ",
+                loginRegisterLink: "Daftar di sini",
+                
+                // Register page
+                registerSubtitle: "Mulai petualanganmu!",
+                registerNameLabel: "Nama Lengkap",
+                registerEmailLabel: "Email",
+                registerPasswordLabel: "Password",
+                passwordHint: "Minimal 6 karakter",
+                registerButton: "Daftar",
+                registerLoginText: "Sudah punya akun? ",
+                registerLoginLink: "Masuk di sini",
+                
+                // Dashboard
+                welcomeText: "Selamat datang!",
+                welcomeSubtext: "Mari mulai hari ini dengan komitmen untuk dirimu sendiri.",
+                moodQuestion: "Bagaimana perasaanmu hari ini?",
+                moodLabelHappy: "Bahagia",
+                moodLabelGood: "Baik",
+                moodLabelNeutral: "Biasa Saja",
+                moodLabelSad: "Sedih",
+                moodLabelStressed: "Stres",
+                questTitle: "Pilih Quest Harimu",
+                backToMoodButton: "Ubah Mood",
+                startQuestButton: "Mulai Quest",
+                activeQuestText: "Quest Aktif:",
+                currentQuestTitle: "Detail Quest",
+                timerLabel: "Waktu tersisa",
+                completeQuestButton: "Selesai",
+                cancelQuestButton: "Batalkan",
+                completionTitle: "Quest Selesai!",
+                completionMessage: "Luar biasa! Kamu telah menyelesaikan quest hari ini.",
+                anotherQuestButton: "Quest Lainnya",
+                backToMoodButton2: "Kembali ke Mood",
+                streakDaysLabel: "Hari Berturut-turut",
+                levelProgressTitle: "Progress Level",
+                badgesTitle: "Badge Achievements",
+                statsTitle: "Statistik",
+                totalQuestsLabel: "Total Quest Selesai",
+                todaysQuestsLabel: "Quest Hari Ini",
+                consistencyLabel: "Tingkat Konsistensi",
+                historyTitle: "Riwayat Quest",
+                historyDate: "Tanggal",
+                historyMood: "Mood",
+                historyQuest: "Quest",
+                historyStatus: "Status",
+                historyXP: "XP",
+                noHistoryText: "Belum ada riwayat",
+                logoutButton: "Keluar",
+                earnedXPLabel: "XP Didapat",
+                streakLabel: "Streak"
+            },
+            en: {
+                // Loading screen
+                loadingText: "Opening your mental wellness adventure...",
+                
+                // Landing page
+                storyTitle: "Background Story",
+                storyText1: "VibeQuest was born from the awareness that mental health is a valuable asset that needs to be maintained every day. In a digital era full of pressure and distractions, many individuals struggle to maintain their emotional and mental balance.",
+                storyText2: "Based on research, building small consistent habits is more effective than big unsustainable changes. However, consistency is the biggest challenge for most people.",
+                pointTitle1: "Our Mission",
+                pointDesc1: "Helping every individual build healthy habits for mental health through a fun and sustainable approach.",
+                pointTitle2: "Basic Concept",
+                pointDesc2: "Combining positive psychology principles, gamification, and behavioral science to create an effective and engaging experience.",
+                pointTitle3: "Future Vision",
+                pointDesc3: "Becoming the leading platform in helping millions of people achieve optimal mental health through daily habits.",
+                featureTitle1: "Personal Daily Quest",
+                featureDesc1: "Daily activities tailored to your mood and needs for optimal results",
+                featureTitle2: "Smart Streak System",
+                featureDesc2: "Streak protection and motivation to stay consistent in your journey",
+                featureTitle3: "In-depth Analysis",
+                featureDesc3: "Monitor your progress with detailed data and insights for sustainable growth",
+                featureTitle4: "Achievement System",
+                featureDesc4: "Collect badges and level up to unlock exclusive features and rewards",
+                ctaText: "Start your mental wellness journey today",
+                ctaButton1: "Get Started",
+                ctaButton2: "View Demo",
+                footerText: "Free forever • Privacy guaranteed",
+                
+                // Settings
+                settingsTitle: "Display Settings",
+                themeTitle: "Color Theme",
+                themeDescription: "Choose your favorite theme",
+                lightTheme: "Light",
+                darkTheme: "Dark",
+                streakProtectionTitle: "Streak Protection",
+                streakProtectionStatus: "3 left this month",
+                protectionCount: "3",
+                
+                // Login page
+                loginSubtitle: "Welcome back!",
+                loginEmailLabel: "Email",
+                loginPasswordLabel: "Password",
+                rememberMeLabel: "Remember me",
+                loginButton: "Login",
+                loginRegisterText: "Don't have an account? ",
+                loginRegisterLink: "Sign up here",
+                
+                // Register page
+                registerSubtitle: "Start your adventure!",
+                registerNameLabel: "Full Name",
+                registerEmailLabel: "Email",
+                registerPasswordLabel: "Password",
+                passwordHint: "Minimum 6 characters",
+                registerButton: "Sign Up",
+                registerLoginText: "Already have an account? ",
+                registerLoginLink: "Login here",
+                
+                // Dashboard
+                welcomeText: "Welcome!",
+                welcomeSubtext: "Let's start today with a commitment to yourself.",
+                moodQuestion: "How are you feeling today?",
+                moodLabelHappy: "Happy",
+                moodLabelGood: "Good",
+                moodLabelNeutral: "Neutral",
+                moodLabelSad: "Sad",
+                moodLabelStressed: "Stressed",
+                questTitle: "Choose Your Daily Quest",
+                backToMoodButton: "Change Mood",
+                startQuestButton: "Start Quest",
+                activeQuestText: "Active Quest:",
+                currentQuestTitle: "Quest Details",
+                timerLabel: "Time remaining",
+                completeQuestButton: "Complete",
+                cancelQuestButton: "Cancel",
+                completionTitle: "Quest Complete!",
+                completionMessage: "Amazing! You've completed today's quest.",
+                anotherQuestButton: "Another Quest",
+                backToMoodButton2: "Back to Mood",
+                streakDaysLabel: "Days in a Row",
+                levelProgressTitle: "Level Progress",
+                badgesTitle: "Badge Achievements",
+                statsTitle: "Statistics",
+                totalQuestsLabel: "Total Quests Completed",
+                todaysQuestsLabel: "Today's Quests",
+                consistencyLabel: "Consistency Rate",
+                historyTitle: "Quest History",
+                historyDate: "Date",
+                historyMood: "Mood",
+                historyQuest: "Quest",
+                historyStatus: "Status",
+                historyXP: "XP",
+                noHistoryText: "No history yet",
+                logoutButton: "Logout",
+                earnedXPLabel: "XP Earned",
+                streakLabel: "Streak"
+            }
+        };
+        
+        // Quest Database dengan Subquest
+        const quests = [
+            {
+                id: 1,
+                name: {
+                    id: "Meditasi Mindfulness",
+                    en: "Mindfulness Meditation"
+                },
+                icon: "🧘",
+                description: {
+                    id: "10 menit meditasi untuk menenangkan pikiran",
+                    en: "10 minutes of meditation to calm your mind"
+                },
+                duration: 600, // 10 minutes in seconds
+                xp: 50,
+                type: "meditation",
+                subquests: {
+                    id: [
+                        "Duduk dengan nyaman dan fokus pada napas",
+                        "Perhatikan sensasi tubuh tanpa menghakimi",
+                        "Kembali fokus saat pikiran mengembara",
+                        "Akhiri dengan niat positif untuk hari ini"
+                    ],
+                    en: [
+                        "Sit comfortably and focus on your breath",
+                        "Observe bodily sensations without judgment",
+                        "Return focus when your mind wanders",
+                        "End with positive intention for the day"
+                    ]
+                },
+                moodSpecific: {
+                    happy: {
+                        id: ["Nikmati energi positif dalam meditasi", "Ekspresi rasa syukur selama meditasi"],
+                        en: ["Enjoy positive energy during meditation", "Express gratitude during meditation"]
+                    },
+                    good: {
+                        id: ["Fokus pada perasaan nyaman", "Perkuat energi positif"],
+                        en: ["Focus on comfortable feelings", "Strengthen positive energy"]
+                    },
+                    neutral: {
+                        id: ["Ambil waktu untuk menyadari perasaan", "Ciptakan ruang untuk refleksi"],
+                        en: ["Take time to acknowledge feelings", "Create space for reflection"]
+                    },
+                    sad: {
+                        id: ["Akui perasaan sedih tanpa menghakimi", "Beri diri izin untuk merasa"],
+                        en: ["Acknowledge sad feelings without judgment", "Give yourself permission to feel"]
+                    },
+                    stressed: {
+                        id: ["Fokus pada relaksasi tubuh", "Lepaskan ketegangan dengan napas"],
+                        en: ["Focus on body relaxation", "Release tension with breathing"]
+                    }
+                }
+            },
+            {
+                id: 2,
+                name: {
+                    id: "Latihan Pernapasan",
+                    en: "Breathing Exercise"
+                },
+                icon: "🌬️",
+                description: {
+                    id: "5 menit teknik pernapasan dalam untuk relaksasi",
+                    en: "5 minutes of deep breathing technique for relaxation"
+                },
+                duration: 300, // 5 minutes
+                xp: 30,
+                type: "breathing",
+                subquests: {
+                    id: [
+                        "Duduk tegak dengan bahu rileks",
+                        "Tarik napas dalam melalui hidung (4 hitungan)",
+                        "Tahan napas (7 hitungan)",
+                        "Hembuskan perlahan melalui mulut (8 hitungan)",
+                        "Ulangi selama 5 menit"
+                    ],
+                    en: [
+                        "Sit upright with relaxed shoulders",
+                        "Inhale deeply through nose (4 counts)",
+                        "Hold breath (7 counts)",
+                        "Exhale slowly through mouth (8 counts)",
+                        "Repeat for 5 minutes"
+                    ]
+                },
+                moodSpecific: {
+                    happy: {
+                        id: ["Napas energi untuk memperkuat perasaan baik"],
+                        en: ["Energy breathing to strengthen good feelings"]
+                    },
+                    good: {
+                        id: ["Napas penuh untuk menjaga keseimbangan"],
+                        en: ["Full breathing to maintain balance"]
+                    },
+                    neutral: {
+                        id: ["Napas sadar untuk meningkatkan kesadaran"],
+                        en: ["Conscious breathing to increase awareness"]
+                    },
+                    sad: {
+                        id: ["Napas menenangkan untuk melegakan perasaan"],
+                        en: ["Calming breathing to soothe feelings"]
+                    },
+                    stressed: {
+                        id: ["Napas penyembuhan untuk meredakan ketegangan"],
+                        en: ["Healing breathing to relieve tension"]
+                    }
+                }
+            },
+            {
+                id: 3,
+                name: {
+                    id: "Olahraga Ringan",
+                    en: "Light Exercise"
+                },
+                icon: "🏃",
+                description: {
+                    id: "15 menit aktivitas fisik untuk meningkatkan mood",
+                    en: "15 minutes of physical activity to boost mood"
+                },
+                duration: 900, // 15 minutes
+                xp: 60,
+                type: "exercise",
+                subquests: {
+                    id: [
+                        "Pemanasan 3 menit (jalan di tempat)",
+                        "Senam ringan 8 menit",
+                        "Pendinginan 4 menit dengan peregangan"
+                    ],
+                    en: [
+                        "3-minute warm-up (marching in place)",
+                        "8 minutes of light calisthenics",
+                        "4-minute cool-down with stretching"
+                    ]
+                },
+                moodSpecific: {
+                    happy: {
+                        id: ["Dengarkan musik upbeat sambil bergerak", "Tambah variasi gerakan"],
+                        en: ["Listen to upbeat music while moving", "Add movement variations"]
+                    },
+                    good: {
+                        id: ["Fokus pada ritme gerakan", "Nikmati aliran energi"],
+                        en: ["Focus on movement rhythm", "Enjoy the energy flow"]
+                    },
+                    neutral: {
+                        id: ["Mulai dengan gerakan sederhana", "Bangun momentum secara bertahap"],
+                        en: ["Start with simple movements", "Build momentum gradually"]
+                    },
+                    sad: {
+                        id: ["Pilih gerakan lembut dan menenangkan", "Fokus pada perasaan setelah bergerak"],
+                        en: ["Choose gentle and soothing movements", "Focus on how you feel after moving"]
+                    },
+                    stressed: {
+                        id: ["Olahraga untuk melepaskan ketegangan", "Pilih gerakan yang menenangkan"],
+                        en: ["Exercise to release tension", "Choose calming movements"]
+                    }
+                }
+            },
+            {
+                id: 4,
+                name: {
+                    id: "Journaling Emosi",
+                    en: "Emotional Journaling"
+                },
+                icon: "📝",
+                description: {
+                    id: "Tuliskan pikiran dan perasaanmu",
+                    en: "Write down your thoughts and feelings"
+                },
+                duration: 900, // 15 minutes
+                xp: 60,
+                type: "reflection",
+                subquests: {
+                    id: [
+                        "Tulis 3 hal yang kamu syukuri hari ini",
+                        "Deskripsikan perasaanmu saat ini",
+                        "Tulis 1 hal yang bisa membuatmu merasa lebih baik"
+                    ],
+                    en: [
+                        "Write 3 things you're grateful for today",
+                        "Describe your current feelings",
+                        "Write 1 thing that could make you feel better"
+                    ]
+                },
+                moodSpecific: {
+                    happy: {
+                        id: ["Bagikan momen terbaik hari ini"],
+                        en: ["Share the best moments of today"]
+                    },
+                    good: {
+                        id: ["Rekam hal-hal positif yang terjadi"],
+                        en: ["Record positive things that happened"]
+                    },
+                    neutral: {
+                        id: ["Eksplorasi potensi perbaikan"],
+                        en: ["Explore potential improvements"]
+                    },
+                    sad: {
+                        id: ["Berikan validasi untuk perasaanmu"],
+                        en: ["Provide validation for your feelings"]
+                    },
+                    stressed: {
+                        id: ["Identifikasi sumber stres dan solusi"],
+                        en: ["Identify stress sources and solutions"]
+                    }
+                }
+            },
+            {
+                id: 5,
+                name: {
+                    id: "Musik Relaksasi",
+                    en: "Relaxation Music"
+                },
+                icon: "🎵",
+                description: {
+                    id: "Dengarkan musik menenangkan 15 menit",
+                    en: "Listen to calming music for 15 minutes"
+                },
+                duration: 900, // 15 minutes
+                xp: 40,
+                type: "relaxation",
+                subquests: {
+                    id: [
+                        "Pilih musik instrumental atau alam",
+                        "Tutup mata dan fokus pada alunan musik",
+                        "Perhatikan bagaimana tubuh merespons"
+                    ],
+                    en: [
+                        "Choose instrumental or nature music",
+                        "Close eyes and focus on the music",
+                        "Notice how your body responds"
+                    ]
+                },
+                moodSpecific: {
+                    happy: {
+                        id: ["Pilih musik yang sesuai dengan energi positif"],
+                        en: ["Choose music that matches positive energy"]
+                    },
+                    good: {
+                        id: ["Musik untuk meningkatkan suasana hati"],
+                        en: ["Music to enhance your mood"]
+                    },
+                    neutral: {
+                        id: ["Musik untuk relaksasi mendalam"],
+                        en: ["Music for deep relaxation"]
+                    },
+                    sad: {
+                        id: ["Musik yang menenangkan dan menyembuhkan"],
+                        en: ["Music that soothes and heals"]
+                    },
+                    stressed: {
+                        id: ["Musik untuk meredakan kecemasan"],
+                        en: ["Music to reduce anxiety"]
+                    }
+                }
+            },
+            {
+                id: 6,
+                name: {
+                    id: "Baca Buku Inspiratif",
+                    en: "Read Inspirational Book"
+                },
+                icon: "📚",
+                description: {
+                    id: "Membaca buku pengembangan diri 30 menit",
+                    en: "Read self-development book for 30 minutes"
+                },
+                duration: 1800, // 30 minutes
+                xp: 100,
+                type: "learning",
+                subquests: {
+                    id: [
+                        "Pilih buku yang menginspirasi",
+                        "Baca dengan pikiran terbuka",
+                        "Catat 1 insight yang bisa diterapkan"
+                    ],
+                    en: [
+                        "Choose an inspiring book",
+                        "Read with an open mind",
+                        "Note 1 insight you can apply"
+                    ]
+                },
+                moodSpecific: {
+                    happy: {
+                        id: ["Baca untuk memperkuat pandangan positif"],
+                        en: ["Read to strengthen positive perspective"]
+                    },
+                    good: {
+                        id: ["Eksplorasi topik pengembangan diri"],
+                        en: ["Explore self-development topics"]
+                    },
+                    neutral: {
+                        id: ["Temukan inspirasi baru"],
+                        en: ["Find new inspiration"]
+                    },
+                    sad: {
+                        id: ["Baca kisah yang membangkitkan semangat"],
+                        en: ["Read stories that uplift spirit"]
+                    },
+                    stressed: {
+                        id: ["Baca untuk perspektif baru"],
+                        en: ["Read for new perspectives"]
+                    }
+                }
+            },
+            {
+                id: 7,
+                name: {
+                    id: "Koneksi Sosial",
+                    en: "Social Connection"
+                },
+                icon: "💬",
+                description: {
+                    id: "Berbicara dengan teman atau keluarga",
+                    en: "Talk with friends or family"
+                },
+                duration: 1200, // 20 minutes
+                xp: 70,
+                type: "social",
+                subquests: {
+                    id: [
+                        "Kirim pesan atau hubungi seseorang",
+                        "Tanyakan kabar mereka dengan tulus",
+                        "Berbagi perasaan atau cerita positif"
+                    ],
+                    en: [
+                        "Send a message or call someone",
+                        "Ask how they're doing sincerely",
+                        "Share feelings or positive stories"
+                    ]
+                },
+                moodSpecific: {
+                    happy: {
+                        id: ["Bagikan kebahagiaanmu dengan orang lain"],
+                        en: ["Share your happiness with others"]
+                    },
+                    good: {
+                        id: ["Jaga koneksi dengan orang terdekat"],
+                        en: ["Maintain connections with close ones"]
+                    },
+                    neutral: {
+                        id: ["Mulai percakapan yang bermakna"],
+                        en: ["Start meaningful conversations"]
+                    },
+                    sad: {
+                        id: ["Cari dukungan dan pemahaman"],
+                        en: ["Seek support and understanding"]
+                    },
+                    stressed: {
+                        id: ["Bicarakan beban dengan orang terpercaya"],
+                        en: ["Talk about burdens with trusted people"]
+                    }
+                }
+            },
+            {
+                id: 8,
+                name: {
+                    id: "Aktivitas Kreatif",
+                    en: "Creative Activity"
+                },
+                icon: "🎨",
+                description: {
+                    id: "Ekspresikan diri lewat seni atau hobi",
+                    en: "Express yourself through art or hobby"
+                },
+                duration: 1800, // 30 minutes
+                xp: 90,
+                type: "creative",
+                subquests: {
+                    id: [
+                        "Pilih medium kreatif (menggambar, menulis, dll)",
+                        "Ekspresikan perasaan tanpa batasan",
+                        "Nikmati proses tanpa fokus pada hasil"
+                    ],
+                    en: [
+                        "Choose creative medium (drawing, writing, etc)",
+                        "Express feelings without limitations",
+                        "Enjoy the process without focusing on results"
+                    ]
+                },
+                moodSpecific: {
+                    happy: {
+                        id: ["Ekspresikan energi positif secara kreatif"],
+                        en: ["Express positive energy creatively"]
+                    },
+                    good: {
+                        id: ["Jelajahi ide-ide baru"],
+                        en: ["Explore new ideas"]
+                    },
+                    neutral: {
+                        id: ["Gunakan kreativitas untuk self-discovery"],
+                        en: ["Use creativity for self-discovery"]
+                    },
+                    sad: {
+                        id: ["Gunakan seni sebagai katarsis"],
+                        en: ["Use art as catharsis"]
+                    },
+                    stressed: {
+                        id: ["Fokus pada proses kreatif yang menenangkan"],
+                        en: ["Focus on calming creative process"]
+                    }
+                }
+            }
+        ];
+        
+        // Badge System dengan terjemahan
+        const badges = [
+            { id: 1, name: { id: "Pemula", en: "Beginner" }, icon: "🌱", requirement: 1, type: "streak" },
+            { id: 2, name: { id: "Konsisten", en: "Consistent" }, icon: "💪", requirement: 7, type: "streak" },
+            { id: 3, name: { id: "Dedikasi", en: "Dedication" }, icon: "🔥", requirement: 30, type: "streak" },
+            { id: 4, name: { id: "Quest Master", en: "Quest Master" }, icon: "⭐", requirement: 50, type: "quests" },
+            { id: 5, name: { id: "Level 10", en: "Level 10" }, icon: "🏆", requirement: 10, type: "level" },
+            { id: 6, name: { id: "Explorer", en: "Explorer" }, icon: "🗺️", requirement: 5, type: "variety" }
+        ];
+        
+        // Motivational messages based on mood and completion
+        const motivationalMessages = {
+            id: {
+                happy: {
+                    start: "Energi positifmu luar biasa! Mari pertahankan dengan quest hari ini.",
+                    complete: "Sempurna! Kamu berhasil menjaga energi positifmu. Terus begini ya!"
+                },
+                good: {
+                    start: "Mood yang baik adalah awal yang bagus! Yuk tingkatkan lagi dengan quest.",
+                    complete: "Hebat! Kamu semakin konsisten dalam menjaga kesehatan mentalmu."
+                },
+                neutral: {
+                    start: "Tidak apa-apa merasa biasa saja. Quest ini bisa membantumu merasa lebih baik.",
+                    complete: "Lihat? Kamu bisa melakukannya! Konsistensi kecil membawa perubahan besar."
+                },
+                sad: {
+                    start: "Aku tahu ini berat, tapi kamu tidak sendiri. Mari ambil langkah kecil bersama.",
+                    complete: "Kamu sangat kuat! Bahkan di hari sulit, kamu tetap berkomitmen pada dirimu."
+                },
+                stressed: {
+                    start: "Stres itu wajar. Quest ini dirancang khusus untuk membantumu merasa lebih tenang.",
+                    complete: "Luar biasa! Kamu berhasil mengelola stresmu dengan baik. Bangga padamu!"
+                }
+            },
+            en: {
+                happy: {
+                    start: "Your positive energy is amazing! Let's maintain it with today's quest.",
+                    complete: "Perfect! You successfully maintained your positive energy. Keep it up!"
+                },
+                good: {
+                    start: "A good mood is a great start! Let's enhance it further with a quest.",
+                    complete: "Great! You're becoming more consistent in maintaining your mental health."
+                },
+                neutral: {
+                    start: "It's okay to feel just fine. This quest can help you feel better.",
+                    complete: "See? You can do it! Small consistencies bring big changes."
+                },
+                sad: {
+                    start: "I know this is hard, but you're not alone. Let's take small steps together.",
+                    complete: "You're so strong! Even on difficult days, you're committed to yourself."
+                },
+                stressed: {
+                    start: "Stress is normal. This quest is specifically designed to help you feel calmer.",
+                    complete: "Amazing! You successfully managed your stress. Proud of you!"
+                }
+            }
+        };
+        
+        // ========================
+        // Initialization
+        // ========================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show loading screen dengan waktu lebih singkat
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    checkAutoLogin();
+                }, 300);
+            }, 1000);
+            
+            // Tambah floating emoji untuk landing page
+            createFloatingEmojis();
+            
+            // Initialize event listeners
+            initializeEventListeners();
+            
+            // Apply saved language preference
+            const savedLanguage = localStorage.getItem('vibequest_language') || 'id';
+            changeLanguage(savedLanguage, false);
+        });
+        
+        function createFloatingEmojis() {
+            const emojis = ['🧠', '💪', '🌟', '🎯', '🔥', '🌈', '💭', '✨', '😊', '🙂', '😐', '😔', '😰'];
+            const container = document.getElementById('landingPage');
+            
+            if (!container) return;
+            
+            for (let i = 0; i < 15; i++) {
+                const emoji = document.createElement('div');
+                emoji.className = 'floating-emoji interactive-emoji';
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.left = `${Math.random() * 100}%`;
+                emoji.style.top = `${Math.random() * 100}%`;
+                emoji.style.animationDelay = `${Math.random() * 5}s`;
+                emoji.style.fontSize = `${Math.random() * 20 + 20}px`;
+                emoji.style.opacity = Math.random() * 0.1 + 0.05;
+                
+                emoji.addEventListener('mouseenter', function() {
+                    this.style.animation = 'dance 0.6s ease infinite alternate';
+                    this.style.opacity = '0.3';
+                    this.style.transform = 'scale(1.5)';
+                });
+                
+                emoji.addEventListener('mouseleave', function() {
+                    this.style.animation = `float 20s infinite linear`;
+                    this.style.opacity = '0.08';
+                    this.style.transform = 'scale(1)';
+                });
+                
+                container.appendChild(emoji);
+            }
+        }
+        
+        function checkAutoLogin() {
+            const savedSession = localStorage.getItem('vibequest_session');
+            if (savedSession) {
+                const session = JSON.parse(savedSession);
+                const users = getUsers();
+                const user = users.find(u => u.email === session.email);
+                
+                if (user) {
+                    currentUser = user;
+                    showPage('dashboardPage');
+                    loadDashboard();
+                    return;
+                }
+            }
+            
+            showPage('landingPage');
+        }
+        
+        // ========================
+        // Event Listeners
+        // ========================
+        
+        function initializeEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+            
+            // Mood selection
+            document.querySelectorAll('.mood-item').forEach(item => {
+                item.addEventListener('click', handleMoodSelection);
+            });
+            
+            // Interactive emojis di landing page
+            document.querySelectorAll('.interactive-emoji').forEach(emoji => {
+                emoji.addEventListener('mouseenter', function() {
+                    this.style.animation = 'dance 0.6s ease infinite alternate';
+                });
+                
+                emoji.addEventListener('mouseleave', function() {
+                    this.style.animation = 'gentleFloat 3s ease-in-out infinite';
+                });
+            });
+            
+            // Close settings panel when clicking outside
+            document.addEventListener('click', function(event) {
+                const settingsPanel = document.getElementById('settingsPanel');
+                const themeToggle = document.querySelector('.theme-toggle-btn');
+                
+                if (settingsPanel && settingsPanel.classList.contains('show') && 
+                    !settingsPanel.contains(event.target) && 
+                    themeToggle && !themeToggle.contains(event.target)) {
+                    settingsPanel.classList.remove('show');
+                }
+            });
+            
+            // Close language dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const languageDropdown = document.getElementById('languageDropdown');
+                const languageBtn = document.querySelector('.language-btn');
+                
+                if (languageDropdown && languageDropdown.classList.contains('show') && 
+                    !languageDropdown.contains(event.target) && 
+                    languageBtn && !languageBtn.contains(event.target)) {
+                    languageDropdown.classList.remove('show');
+                }
+            });
+            
+            // Tambahkan animasi untuk mood emoji saat hover di dashboard
+            document.addEventListener('mouseover', function(event) {
+                const moodEmoji = event.target.closest('.mood-emoji');
+                if (moodEmoji && !moodEmoji.closest('.mood-item.active')) {
+                    const moodItem = moodEmoji.closest('.mood-item');
+                    if (moodItem) {
+                        const mood = moodItem.dataset.mood;
+                        moodEmoji.style.animation = getMoodHoverAnimation(mood);
+                    }
+                }
+            });
+            
+            document.addEventListener('mouseout', function(event) {
+                const moodEmoji = event.target.closest('.mood-emoji');
+                if (moodEmoji && !moodEmoji.closest('.mood-item.active')) {
+                    moodEmoji.style.animation = 'gentleFloat 4s ease-in-out infinite';
+                }
+            });
+        }
+        
+        function getMoodHoverAnimation(mood) {
+            const animations = {
+                happy: 'happyDance 0.6s ease infinite alternate',
+                good: 'goodVibe 0.8s ease infinite alternate',
+                neutral: 'neutralFloat 1s ease infinite alternate',
+                sad: 'sadBounce 1.2s ease infinite alternate',
+                stressed: 'stressedPulse 0.5s ease infinite alternate'
+            };
+            return animations[mood] || 'gentleFloat 4s ease-in-out infinite';
+        }
+        
+        // ========================
+        // Language Functions
+        // ========================
+        
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('show');
+        }
+        
+        function changeLanguage(lang, showAlert = true) {
+            currentLanguage = lang;
+            localStorage.setItem('vibequest_language', lang);
+            
+            // Update active language button
+            document.querySelectorAll('.language-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`.language-option[data-lang="${lang}"]`).classList.add('active');
+            
+            // Update current language text
+            document.getElementById('currentLanguage').textContent = 
+                lang === 'id' ? 'Bahasa Indonesia' : 'English';
+            
+            // Apply translations
+            applyTranslations(lang);
+            
+            // Close dropdown
+            document.getElementById('languageDropdown').classList.remove('show');
+            
+            // Update quest display if on dashboard
+            if (currentUser && document.getElementById('dashboardPage').style.display !== 'none') {
+                if (selectedMood && document.getElementById('questSection') && 
+                    !document.getElementById('questSection').classList.contains('hidden')) {
+                    populateQuests(selectedMood);
+                }
+                updateMotivationalMessage('start');
+            }
+            
+            if (showAlert) {
+                const message = lang === 'id' ? 'Bahasa berhasil diubah!' : 'Language changed successfully!';
+                alert(message);
+            }
+        }
+        
+        function applyTranslations(lang) {
+            const trans = translations[lang];
+            
+            // Apply translations to all elements
+            for (const [key, value] of Object.entries(trans)) {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = value;
+                    } else {
+                        element.textContent = value;
+                    }
+                }
+            }
+            
+            // Update loading text
+            const loadingNarrative = document.querySelector('.loading-narrative');
+            if (loadingNarrative) {
+                loadingNarrative.textContent = trans.loadingText;
+            }
+            
+            // Update quest descriptions if on quest selection
+            if (selectedMood && document.getElementById('questSection') && 
+                !document.getElementById('questSection').classList.contains('hidden')) {
+                populateQuests(selectedMood);
+            }
+        }
+        
+        // ========================
+        // Authentication Functions
+        // ========================
+        
+        function handleRegister(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            // Validate email
+            if (!isValidEmail(email)) {
+                const message = currentLanguage === 'id' ? 'Email tidak valid!' : 'Invalid email!';
+                alert(message);
+                return;
+            }
+            
+            // Validate password
+            if (password.length < 6) {
+                const message = currentLanguage === 'id' ? 'Password minimal 6 karakter!' : 'Password must be at least 6 characters!';
+                alert(message);
+                return;
+            }
+            
+            // Check if user exists
+            const users = getUsers();
+            if (users.find(u => u.email === email)) {
+                const message = currentLanguage === 'id' ? 'Email sudah terdaftar!' : 'Email already registered!';
+                alert(message);
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: btoa(password),
+                xp: 0,
+                level: 1,
+                streak: 0,
+                lastQuestDate: null,
+                questsCompleted: [],
+                moodHistory: [],
+                streakProtection: 3,
+                streakProtectionUsedThisMonth: 0,
+                streakProtectionMonth: new Date().getMonth(),
+                badges: [],
+                createdAt: new Date().toISOString(),
+                theme: 'light',
+                language: currentLanguage
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('vibequest_users', JSON.stringify(users));
+            
+            const successMessage = currentLanguage === 'id' ? 
+                'Pendaftaran berhasil! Silakan login.' : 
+                'Registration successful! Please login.';
+            alert(successMessage);
+            showPage('loginPage');
+            
+            // Reset form
+            document.getElementById('registerForm').reset();
+        }
+        
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            const users = getUsers();
+            const user = users.find(u => u.email === email && u.password === btoa(password));
+            
+            if (!user) {
+                const message = currentLanguage === 'id' ? 'Email atau password salah!' : 'Incorrect email or password!';
+                alert(message);
+                return;
+            }
+            
+            currentUser = user;
+            
+            // Update user language preference
+            if (user.language && user.language !== currentLanguage) {
+                changeLanguage(user.language, false);
+            }
+            
+            // Save session if remember me is checked
+            if (rememberMe) {
+                localStorage.setItem('vibequest_session', JSON.stringify({ email: email }));
+            }
+            
+            showPage('dashboardPage');
+            loadDashboard();
+            
+            // Reset form
+            document.getElementById('loginForm').reset();
+        }
+        
+        function logout() {
+            const confirmMessage = currentLanguage === 'id' ? 
+                'Yakin ingin keluar?' : 
+                'Are you sure you want to logout?';
+            
+            if (confirm(confirmMessage)) {
+                currentUser = null;
+                localStorage.removeItem('vibequest_session');
+                showPage('landingPage');
+                
+                // Reset dashboard
+                resetDailyQuest();
+            }
+        }
+        
+        // ========================
+        // Dashboard Functions
+        // ========================
+        
+        function loadDashboard() {
+            // Update user info
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            
+            // Load user theme and language
+            currentTheme = currentUser.theme || 'light';
+            applyTheme(currentTheme);
+            
+            // Check streak
+            checkAndUpdateStreak();
+            
+            // Update all displays
+            updateUserStats();
+            updateBadges();
+            updateHistory();
+            updateStreakProtectionDisplay();
+            
+            // Check if quest already completed today
+            updateMotivationalMessage('start');
+        }
+        
+        function updateUserStats() {
+            const level = calculateLevel(currentUser.xp);
+            const xpForCurrentLevel = getXPForLevel(level);
+            const xpForNextLevel = getXPForLevel(level + 1);
+            const xpProgress = currentUser.xp - xpForCurrentLevel;
+            const xpNeeded = xpForNextLevel - xpForCurrentLevel;
+            const progressPercent = (xpProgress / xpNeeded) * 100;
+            
+            currentUser.level = level;
+            
+            document.getElementById('userLevel').textContent = currentLanguage === 'id' ? 
+                `Level ${level}` : `Level ${level}`;
+            document.getElementById('userXP').textContent = `${currentUser.xp} XP`;
+            document.getElementById('userStreak').textContent = currentLanguage === 'id' ? 
+                `${currentUser.streak} hari` : `${currentUser.streak} days`;
+            document.getElementById('userProtection').textContent = currentUser.streakProtection;
+            document.getElementById('streakNumber').textContent = currentUser.streak;
+            
+            // Update progress bar
+            document.getElementById('currentLevel').textContent = level;
+            document.getElementById('currentXP').textContent = xpProgress;
+            document.getElementById('nextLevelXP').textContent = xpNeeded;
+            document.getElementById('xpProgressBar').style.width = `${progressPercent}%`;
+            document.getElementById('xpProgressBar').textContent = `${Math.round(progressPercent)}%`;
+            
+            // Update statistics
+            document.getElementById('totalQuestsCompleted').textContent = currentUser.questsCompleted.length;
+            
+            // Today's quests
+            const today = new Date().toDateString();
+            const todaysQuests = currentUser.questsCompleted.filter(q => new Date(q.date).toDateString() === today);
+            document.getElementById('todaysQuests').textContent = todaysQuests.length;
+            
+            // Consistency rate
+            const daysSinceJoined = Math.floor((new Date() - new Date(currentUser.createdAt)) / (1000 * 60 * 60 * 24)) + 1;
+            const consistencyRate = Math.round((currentUser.questsCompleted.length / daysSinceJoined) * 100);
+            document.getElementById('consistencyRate').textContent = `${consistencyRate}%`;
+            
+            saveUserData();
+        }
+        
+        function updateBadges() {
+            const badgeGrid = document.getElementById('badgeGrid');
+            badgeGrid.innerHTML = '';
+            
+            badges.forEach(badge => {
+                const isUnlocked = checkBadgeUnlocked(badge);
+                const badgeDiv = document.createElement('div');
+                badgeDiv.className = `badge-item ${isUnlocked ? '' : 'locked'}`;
+                badgeDiv.innerHTML = `
+                    <div class="badge-icon">${badge.icon}</div>
+                    <div class="badge-name">${badge.name[currentLanguage] || badge.name.id}</div>
+                `;
+                badgeGrid.appendChild(badgeDiv);
+                
+                // Add badge to user if newly unlocked
+                if (isUnlocked && !currentUser.badges.includes(badge.id)) {
+                    currentUser.badges.push(badge.id);
+                    showBadgeUnlockNotification(badge);
+                }
+            });
+        }
+        
+        function checkBadgeUnlocked(badge) {
+            switch (badge.type) {
+                case 'streak':
+                    return currentUser.streak >= badge.requirement;
+                case 'quests':
+                    return currentUser.questsCompleted.length >= badge.requirement;
+                case 'level':
+                    return currentUser.level >= badge.requirement;
+                case 'variety':
+                    const uniqueQuests = new Set(currentUser.questsCompleted.map(q => q.questId));
+                    return uniqueQuests.size >= badge.requirement;
+                default:
+                    return false;
+            }
+        }
+        
+        function showBadgeUnlockNotification(badge) {
+            const message = currentLanguage === 'id' ? 
+                `🎉 Badge Baru: ${badge.icon} ${badge.name.id}!` : 
+                `🎉 New Badge: ${badge.icon} ${badge.name.en}!`;
+            alert(message);
+        }
+        
+        function updateHistory() {
+            const tableBody = document.getElementById('historyTableBody');
+            
+            if (currentUser.questsCompleted.length === 0) {
+                const noHistoryText = currentLanguage === 'id' ? 'Belum ada riwayat' : 'No history yet';
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">${noHistoryText}</td></tr>`;
+                return;
+            }
+            
+            // Show last 10 quests
+            const recentQuests = [...currentUser.questsCompleted].reverse().slice(0, 10);
+            
+            tableBody.innerHTML = recentQuests.map(quest => {
+                const questData = quests.find(q => q.id === quest.questId);
+                const date = new Date(quest.date).toLocaleDateString(currentLanguage === 'id' ? 'id-ID' : 'en-US', { 
+                    day: 'numeric', 
+                    month: 'short',
+                    year: 'numeric'
+                });
+                const moodEmoji = getMoodEmoji(quest.mood);
+                const questName = questData ? 
+                    (questData.name[currentLanguage] || questData.name.id) : 
+                    (currentLanguage === 'id' ? 'Tidak diketahui' : 'Unknown');
+                const statusText = currentLanguage === 'id' ? 'Selesai' : 'Completed';
+                
+                return `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${moodEmoji}</td>
+                        <td>${questName}</td>
+                        <td><span class="badge bg-success">${statusText}</span></td>
+                        <td>+${quest.xp} XP</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // ========================
+        // Mood Selection
+        // ========================
+        
+        function handleMoodSelection(e) {
+            const moodItem = e.currentTarget;
+            const mood = moodItem.dataset.mood;
+            
+            // Remove active from all
+            document.querySelectorAll('.mood-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active to selected
+            moodItem.classList.add('active');
+            selectedMood = mood;
+            
+            // Trigger selected animation
+            const emoji = moodItem.querySelector('.mood-emoji');
+            emoji.style.animation = 'selectedGlow 1s ease';
+            
+            // Show quest section
+            setTimeout(() => {
+                document.getElementById('moodSection').classList.add('hidden');
+                document.getElementById('questSection').classList.remove('hidden');
+                populateQuests(mood);
+                updateMotivationalMessage('start', mood);
+            }, 300);
+        }
+        
+        function populateQuests(mood) {
+            const questList = document.getElementById('questList');
+            questList.innerHTML = '';
+            
+            // Filter quests based on mood
+            let recommendedQuests = [...quests];
+            
+            // Sort berdasarkan mood (prioritas untuk mood negatif)
+            if (mood === 'stressed' || mood === 'sad') {
+                recommendedQuests.sort((a, b) => {
+                    const priority = { meditation: 1, breathing: 2, relaxation: 3, exercise: 4, reflection: 5 };
+                    return (priority[a.type] || 10) - (priority[b.type] || 10);
+                });
+            } else if (mood === 'happy' || mood === 'good') {
+                recommendedQuests.sort((a, b) => {
+                    const priority = { exercise: 1, social: 2, creative: 3, learning: 4 };
+                    return (priority[a.type] || 10) - (priority[b.type] || 10);
+                });
+            }
+            
+            recommendedQuests.forEach(quest => {
+                const questCard = document.createElement('div');
+                questCard.className = 'quest-card';
+                questCard.dataset.questId = quest.id;
+                
+                // Get translated quest data
+                const questName = quest.name[currentLanguage] || quest.name.id;
+                const questDesc = quest.description[currentLanguage] || quest.description.id;
+                const subquests = quest.subquests[currentLanguage] || quest.subquests.id;
+                const moodSpecificSubquests = quest.moodSpecific && quest.moodSpecific[mood] ? 
+                    quest.moodSpecific[mood][currentLanguage] || quest.moodSpecific[mood].id : [];
+                
+                const allSubquests = [...subquests, ...moodSpecificSubquests];
+                const timeText = currentLanguage === 'id' ? 'menit' : 'minutes';
+                const stepsText = currentLanguage === 'id' ? 'Langkah-langkah:' : 'Steps:';
+                
+                questCard.innerHTML = `
+                    <div class="quest-header">
+                        <div class="quest-title">
+                            <span class="interactive-emoji">${quest.icon}</span>
+                            <span>${questName}</span>
+                        </div>
+                        <div class="quest-xp">+${quest.xp} XP</div>
+                    </div>
+                    <div class="quest-desc">${questDesc}</div>
+                    <div class="quest-duration">
+                        <i class="fas fa-clock me-1"></i>
+                        ${Math.floor(quest.duration / 60)} ${timeText}
+                    </div>
+                    <div class="subquest-container">
+                        <div class="subquest-title">
+                            <i class="fas fa-list-check me-1"></i>
+                            ${stepsText}
+                        </div>
+                        <ul class="subquest-list">
+                            ${allSubquests.map(subquest => `<li class="subquest-item">${subquest}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+                
+                questCard.addEventListener('click', function() {
+                    document.querySelectorAll('.quest-card').forEach(card => {
+                        card.classList.remove('active');
+                    });
+                    questCard.classList.add('active');
+                    selectedQuest = quest;
+                });
+                
+                questList.appendChild(questCard);
+            });
+        }
+        
+        function getMoodEmoji(mood) {
+            const emojis = {
+                happy: '😊',
+                good: '🙂',
+                neutral: '😐',
+                sad: '😔',
+                stressed: '😰'
+            };
+            return emojis[mood] || '😐';
+        }
+        
+        // ========================
+        // Quest Management
+        // ========================
+        
+        function startQuest() {
+            if (!selectedQuest) {
+                const message = currentLanguage === 'id' ? 
+                    'Pilih quest terlebih dahulu!' : 
+                    'Please select a quest first!';
+                alert(message);
+                return;
+            }
+            
+            // Hide quest section, show timer
+            document.getElementById('questSection').classList.add('hidden');
+            document.getElementById('timerSection').classList.remove('hidden');
+            
+            // Set quest name
+            const questName = selectedQuest.name[currentLanguage] || selectedQuest.name.id;
+            document.getElementById('activeQuestName').textContent = questName;
+            
+            // Set quest description
+            const questDesc = selectedQuest.description[currentLanguage] || selectedQuest.description.id;
+            document.getElementById('currentQuestDesc').textContent = questDesc;
+            
+            // Set subquests
+            const subquestsContainer = document.getElementById('activeSubquests');
+            const subquests = selectedQuest.subquests[currentLanguage] || selectedQuest.subquests.id;
+            const moodSpecificSubquests = selectedQuest.moodSpecific && selectedQuest.moodSpecific[selectedMood] ? 
+                selectedQuest.moodSpecific[selectedMood][currentLanguage] || selectedQuest.moodSpecific[selectedMood].id : [];
+            const allSubquests = [...subquests, ...moodSpecificSubquests];
+            
+            subquestsContainer.innerHTML = allSubquests.map((subquest, index) => `
+                <div class="active-subquest-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>${subquest}</span>
+                </div>
+            `).join('');
+            
+            // Start timer
+            timerSeconds = selectedQuest.duration;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+                
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    // Auto-complete when timer ends
+                    completeQuest();
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+        
+        function completeQuest() {
+            clearInterval(timerInterval);
+            
+            // Check if this is the first quest today for streak calculation
+            const today = new Date().toDateString();
+            const lastQuestDate = currentUser.lastQuestDate ? new Date(currentUser.lastQuestDate).toDateString() : null;
+            
+            // Update streak hanya jika ini adalah quest pertama hari ini
+            if (lastQuestDate !== today) {
+                // Jika quest terakhir bukan kemarin, reset streak
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayString = yesterday.toDateString();
+                
+                if (lastQuestDate !== yesterdayString && lastQuestDate !== null) {
+                    // Jika melewatkan hari, cek proteksi streak
+                    checkAndUpdateStreak();
+                }
+                
+                // Tambah streak untuk hari ini
+                currentUser.streak++;
+                currentUser.lastQuestDate = today;
+            }
+            
+            // Add quest to completed
+            const questCompletion = {
+                questId: selectedQuest.id,
+                mood: selectedMood,
+                date: new Date().toISOString(),
+                xp: selectedQuest.xp,
+                completed: true
+            };
+            
+            currentUser.questsCompleted.push(questCompletion);
+            currentUser.xp += selectedQuest.xp;
+            
+            // Add mood to history
+            currentUser.moodHistory.push({
+                mood: selectedMood,
+                date: new Date().toISOString()
+            });
+            
+            saveUserData();
+            showCompletionScreen();
+        }
+        
+        function cancelQuest() {
+            const confirmMessage = currentLanguage === 'id' ? 
+                'Yakin ingin membatalkan quest?' : 
+                'Are you sure you want to cancel the quest?';
+            
+            if (confirm(confirmMessage)) {
+                clearInterval(timerInterval);
+                goToQuestSelection();
+            }
+        }
+        
+        function showCompletionScreen() {
+            document.getElementById('timerSection').classList.add('hidden');
+            document.getElementById('completionSection').classList.remove('hidden');
+            
+            // Update completion message
+            const messages = motivationalMessages[currentLanguage];
+            const message = messages && messages[selectedMood] ? 
+                messages[selectedMood].complete : 
+                (currentLanguage === 'id' ? 
+                    'Hebat! Kamu berhasil menyelesaikan quest hari ini!' : 
+                    'Great! You successfully completed today\'s quest!');
+            
+            document.getElementById('completionMessage').textContent = message;
+            document.getElementById('earnedXP').textContent = `+${selectedQuest.xp}`;
+            document.getElementById('currentStreakDisplay').textContent = `${currentUser.streak} 🔥`;
+            
+            // Update dashboard stats
+            updateUserStats();
+            updateBadges();
+            updateHistory();
+            
+            // Show level up if applicable
+            checkLevelUp();
+        }
+        
+        function checkLevelUp() {
+            const newLevel = calculateLevel(currentUser.xp);
+            if (newLevel > currentUser.level) {
+                setTimeout(() => {
+                    const levelUpMessage = currentLanguage === 'id' ? 
+                        `🎊 LEVEL UP! Kamu sekarang Level ${newLevel}!` : 
+                        `🎊 LEVEL UP! You are now Level ${newLevel}!`;
+                    
+                    alert(levelUpMessage);
+                    
+                    if (newLevel % 5 === 0) {
+                        currentUser.streakProtection++;
+                        const protectionMessage = currentLanguage === 'id' ? 
+                            `🛡️ Bonus: +1 Streak Protection! Total: ${currentUser.streakProtection}` : 
+                            `🛡️ Bonus: +1 Streak Protection! Total: ${currentUser.streakProtection}`;
+                        alert(protectionMessage);
+                        updateStreakProtectionDisplay();
+                    }
+                }, 500);
+            }
+        }
+        
+        function goToQuestSelection() {
+            selectedQuest = null;
+            document.getElementById('timerSection').classList.add('hidden');
+            document.getElementById('completionSection').classList.add('hidden');
+            document.getElementById('questSection').classList.remove('hidden');
+            
+            // Reset quest selection
+            document.querySelectorAll('.quest-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            updateUserStats();
+        }
+        
+        function backToMoodSelection() {
+            selectedMood = null;
+            selectedQuest = null;
+            
+            document.getElementById('questSection').classList.add('hidden');
+            document.getElementById('moodSection').classList.remove('hidden');
+            
+            // Reset mood selection
+            document.querySelectorAll('.mood-item').forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+        
+        function resetToMoodSelection() {
+            selectedMood = null;
+            selectedQuest = null;
+            
+            document.getElementById('completionSection').classList.add('hidden');
+            document.getElementById('moodSection').classList.remove('hidden');
+            
+            // Reset mood selection
+            document.querySelectorAll('.mood-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            updateUserStats();
+        }
+        
+        function resetDailyQuest() {
+            selectedMood = null;
+            selectedQuest = null;
+            
+            document.getElementById('moodSection').classList.remove('hidden');
+            document.getElementById('questSection').classList.add('hidden');
+            document.getElementById('timerSection').classList.add('hidden');
+            document.getElementById('completionSection').classList.add('hidden');
+            
+            // Reset mood selection
+            document.querySelectorAll('.mood-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            updateUserStats();
+        }
+        
+        function updateMotivationalMessage(type, mood = null) {
+            const messageDiv = document.getElementById('motivationalMessage');
+            const moodToUse = mood || selectedMood || 'neutral';
+            
+            // Count today's quests
+            const today = new Date().toDateString();
+            const todaysQuests = currentUser.questsCompleted.filter(q => new Date(q.date).toDateString() === today);
+            
+            if (todaysQuests.length > 0) {
+                const questsText = currentLanguage === 'id' ? 
+                    'Quest Selesai Hari Ini!' : 
+                    'Quests Completed Today!';
+                const subtext = currentLanguage === 'id' ? 
+                    'Mau coba quest lainnya?' : 
+                    'Want to try another quest?';
+                messageDiv.innerHTML = `<h4>🎯 ${todaysQuests.length} ${questsText}</h4><p>${subtext}</p>`;
+            } else if (type === 'start' && motivationalMessages[currentLanguage] && motivationalMessages[currentLanguage][moodToUse]) {
+                const message = motivationalMessages[currentLanguage][moodToUse].start;
+                const parts = message.split('.');
+                const title = parts[0] + '.';
+                const subtext = parts.slice(1).join('.').trim();
+                messageDiv.innerHTML = `<h4>💪 ${title}</h4><p>${subtext}</p>`;
+            } else {
+                const welcome = currentLanguage === 'id' ? 'Selamat datang!' : 'Welcome!';
+                const subtext = currentLanguage === 'id' ? 
+                    'Mari mulai hari ini dengan komitmen untuk dirimu sendiri.' : 
+                    'Let\'s start today with a commitment to yourself.';
+                messageDiv.innerHTML = `<h4>🌟 ${welcome}</h4><p>${subtext}</p>`;
+            }
+        }
+        
+        // ========================
+        // Streak Management
+        // ========================
+        
+        function checkAndUpdateStreak() {
+            if (!currentUser.lastQuestDate) {
+                return;
+            }
+            
+            // Check if streak protection needs to be reset for new month
+            checkStreakProtectionReset();
+            
+            const lastDate = new Date(currentUser.lastQuestDate);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            const lastDateString = lastDate.toDateString();
+            const todayString = today.toDateString();
+            const yesterdayString = yesterday.toDateString();
+            
+            // Jika quest terakhir adalah kemarin, streak tetap
+            if (lastDateString === yesterdayString) {
+                return;
+            }
+            
+            // Jika quest terakhir lebih dari kemarin, streak direset
+            if (lastDateString !== todayString && lastDateString !== yesterdayString) {
+                resetStreak();
+            }
+        }
+        
+        function resetStreak() {
+            // Check if user has streak protection available
+            if (currentUser.streakProtection > 0 && currentUser.streakProtectionUsedThisMonth < 3) {
+                currentUser.streakProtection--;
+                currentUser.streakProtectionUsedThisMonth++;
+                
+                const protectionMessage = currentLanguage === 'id' ? 
+                    `🛡️ Streak Protection digunakan! Streak kamu tetap ${currentUser.streak}. Streak Protection tersisa: ${currentUser.streakProtection}` :
+                    `🛡️ Streak Protection used! Your streak remains ${currentUser.streak}. Streak Protection left: ${currentUser.streakProtection}`;
+                
+                alert(protectionMessage);
+                updateStreakProtectionDisplay();
+                saveUserData();
+            } else {
+                // Reset streak jika tidak ada proteksi
+                const lostStreak = currentUser.streak;
+                currentUser.streak = 0;
+                currentUser.lastQuestDate = null;
+                
+                const resetMessage = currentLanguage === 'id' ? 
+                    `💔 Streak kamu (${lostStreak} hari) telah padam karena tidak menyelesaikan quest.` :
+                    `💔 Your streak (${lostStreak} days) has been reset because you didn't complete a quest.`;
+                
+                alert(resetMessage);
+                saveUserData();
+            }
+        }
+        
+        function checkStreakProtectionReset() {
+            const currentMonth = new Date().getMonth();
+            
+            // Jika bulan baru, reset streak protection
+            if (currentMonth !== currentUser.streakProtectionMonth) {
+                currentUser.streakProtection = 3;
+                currentUser.streakProtectionUsedThisMonth = 0;
+                currentUser.streakProtectionMonth = currentMonth;
+                updateStreakProtectionDisplay();
+                saveUserData();
+            }
+        }
+        
+        function updateStreakProtectionDisplay() {
+            const protectionCount = document.getElementById('streakProtectionCount');
+            const protectionStatus = document.getElementById('streakProtectionStatus');
+            
+            if (protectionCount) {
+                const countElement = document.getElementById('protectionCount');
+                if (countElement) {
+                    countElement.textContent = currentUser.streakProtection;
+                }
+            }
+            
+            if (protectionStatus) {
+                const used = currentUser.streakProtectionUsedThisMonth || 0;
+                const remaining = 3 - used;
+                const statusText = currentLanguage === 'id' ? 
+                    `${remaining}x tersisa bulan ini` : 
+                    `${remaining} left this month`;
+                protectionStatus.textContent = statusText;
+            }
+        }
+        
+        // ========================
+        // Theme Management Functions
+        // ========================
+        
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.classList.toggle('show');
+        }
+        
+        function changeTheme(theme) {
+            currentTheme = theme;
+            currentUser.theme = theme;
+            saveUserData();
+            applyTheme(theme);
+            
+            // Update active theme button
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`.theme-option[data-theme="${theme}"]`).classList.add('active');
+            
+            // Close settings panel
+            document.getElementById('settingsPanel').classList.remove('show');
+        }
+        
+        function applyTheme(theme) {
+            // Remove all theme classes
+            document.body.classList.remove('dark-mode');
+            
+            // Add new theme class
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+        
+        // ========================
+        // Level System
+        // ========================
+        
+        function calculateLevel(xp) {
+            // Level formula: Level = floor(sqrt(XP / 50)) + 1
+            return Math.floor(Math.sqrt(xp / 50)) + 1;
+        }
+        
+        function getXPForLevel(level) {
+            // Inverse of level formula
+            return Math.pow(level - 1, 2) * 50;
+        }
+        
+        // ========================
+        // New Landing Page Functions
+        // ========================
+        
+        function showDemo() {
+            const demoText = currentLanguage === 'id' ? 
+                '🚀 Demo Mode: Lihat bagaimana VibeQuest bekerja!\n\n1. Pilih mood kamu\n2. Pilih quest yang sesuai\n3. Selesaikan quest dan dapatkan XP\n4. Tingkatkan level dan kumpulkan badge!' :
+                '🚀 Demo Mode: See how VibeQuest works!\n\n1. Choose your mood\n2. Select a matching quest\n3. Complete quest and earn XP\n4. Level up and collect badges!';
+            
+            alert(demoText);
+            
+            const demoMessages = currentLanguage === 'id' ? [
+                "🎯 Pilih quest berdasarkan mood harianmu",
+                "🔥 Pertahankan streak untuk bonus spesial",
+                "📊 Pantau perkembangan dengan analisis detail",
+                "🏆 Kumpulkan badge dan naik level!"
+            ] : [
+                "🎯 Choose quests based on your daily mood",
+                "🔥 Maintain streak for special bonuses",
+                "📊 Track progress with detailed analysis",
+                "🏆 Collect badges and level up!"
+            ];
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < demoMessages.length) {
+                    updateMotivationalMessageDemo(demoMessages[i]);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 1500);
+        }
+        
+        function updateMotivationalMessageDemo(message) {
+            const messageDiv = document.getElementById('motivationalMessage') || document.querySelector('.motivational-message');
+            if (messageDiv) {
+                const demoTitle = currentLanguage === 'id' ? '✨ Demo Mode' : '✨ Demo Mode';
+                messageDiv.innerHTML = `<h4>${demoTitle}</h4><p>${message}</p>`;
+                messageDiv.style.animation = 'none';
+                setTimeout(() => {
+                    messageDiv.style.animation = 'slideUp 0.5s ease';
+                }, 10);
+            }
+        }
+        
+        // ========================
+        // Utility Functions
+        // ========================
+        
+        function showPage(pageId) {
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.classList.add('hidden');
+                page.style.display = 'none';
+            });
+            
+            const targetPage = document.getElementById(pageId);
+            targetPage.style.display = 'block';
+            setTimeout(() => {
+                targetPage.classList.remove('hidden');
+            }, 10);
+            
+            // Refresh floating emojis untuk landing page
+            if (pageId === 'landingPage') {
+                setTimeout(() => {
+                    const existing = document.querySelectorAll('.floating-emoji');
+                    existing.forEach(e => e.remove());
+                    createFloatingEmojis();
+                }, 100);
+            }
+        }
+        
+        function getUsers() {
+            const users = localStorage.getItem('vibequest_users');
+            return users ? JSON.parse(users) : [];
+        }
+        
+        function saveUserData() {
+            const users = getUsers();
+            const index = users.findIndex(u => u.id === currentUser.id);
+            
+            if (index !== -1) {
+                users[index] = currentUser;
+                localStorage.setItem('vibequest_users', JSON.stringify(users));
+            }
+            
+            // Update streak protection display
+            updateStreakProtectionDisplay();
+        }
+        
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+    </script>
+</body>
+</html>
